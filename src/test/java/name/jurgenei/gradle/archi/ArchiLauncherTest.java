@@ -1,4 +1,4 @@
-package name.jurgenei.gradle.archi;
+package org.flowdigger.gradle.archi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

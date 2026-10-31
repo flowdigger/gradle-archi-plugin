@@ -1,5 +1,5 @@
 plugins {
-    id 'name.jurgenei.gradle.archi'
+    id 'org.flowdigger.gradle.archi'
 }
 
 archi {
