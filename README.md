@@ -2,16 +2,16 @@
 
 ![Conformance](https://img.shields.io/badge/Conformance-Check--All%20Passing-brightgreen)
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/jurgenei/gradle-archi-plugin/ci.yml?branch=main)](https://github.com/jurgenei/gradle-archi-plugin/actions)
-[![Docker Export Test](https://img.shields.io/github/actions/workflow/status/jurgenei/gradle-archi-plugin/docker-test.yml?branch=main&label=Docker%20Export%20Test)](https://github.com/jurgenei/gradle-archi-plugin/actions/workflows/docker-test.yml)
-[![Coverage CI](https://github.com/jurgenei/gradle-archi-plugin/actions/workflows/coverage.yml/badge.svg)](https://github.com/jurgenei/gradle-archi-plugin/actions/workflows/coverage.yml)
-[![Coverage](https://codecov.io/gh/jurgenei/gradle-archi-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/jurgenei/gradle-archi-plugin)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/flowdigger/gradle-archi-plugin/ci.yml?branch=main)](https://github.com/flowdigger/gradle-archi-plugin/actions)
+[![Docker Export Test](https://img.shields.io/github/actions/workflow/status/flowdigger/gradle-archi-plugin/docker-test.yml?branch=main&label=Docker%20Export%20Test)](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/docker-test.yml)
+[![Coverage CI](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml/badge.svg)](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml)
+[![Coverage](https://codecov.io/gh/flowdigger/gradle-archi-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/flowdigger/gradle-archi-plugin)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/name.jurgenei.gradle.archi?label=Plugin%20Portal)](https://plugins.gradle.org/plugin/name.jurgenei.gradle.archi)
+[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/name.flowdigger.gradle.archi?label=Plugin%20Portal)](https://plugins.gradle.org/plugin/name.flowdigger.gradle.archi)
 
 Gradle plugin to run Archi export processing as a **regular Gradle task**.
 
-The plugin contributes one task named `archi` (type `name.jurgenei.gradle.archi.ArchiTask`) and does not use a custom DSL extension model anymore.
+The plugin contributes one task named `archi` (type `name.flowdigger.gradle.archi.ArchiTask`) and does not use a custom DSL extension model anymore.
 
 ## What It Does
 
@@ -22,9 +22,9 @@ The plugin contributes one task named `archi` (type `name.jurgenei.gradle.archi.
 
 ## Plugin Coordinates
 
-- Plugin id: `name.jurgenei.gradle.archi`
-- Implementation class: `name.jurgenei.gradle.archi.ArchiGradlePlugin`
-- Main task type: `name.jurgenei.gradle.archi.ArchiTask`
+- Plugin id: `name.flowdigger.gradle.archi`
+- Implementation class: `name.flowdigger.gradle.archi.ArchiGradlePlugin`
+- Main task type: `name.flowdigger.gradle.archi.ArchiTask`
 
 ## Requirements
 
@@ -37,7 +37,7 @@ Add the plugin and configure the `archi` task in `build.gradle`:
 
 ```groovy
 plugins {
-    id 'name.jurgenei.gradle.archi' version '0.1.8'
+    id 'name.flowdigger.gradle.archi' version '0.1.8'
 }
 
 archi {
@@ -68,7 +68,7 @@ Then in consumer `build.gradle`:
 
 ```groovy
 plugins {
-    id 'name.jurgenei.gradle.archi'
+    id 'name.flowdigger.gradle.archi'
 }
 ```
 
@@ -109,12 +109,12 @@ archi {
 ### 2) Register Multiple Archi Tasks
 
 ```groovy
-tasks.register('archiCatalog', name.jurgenei.gradle.archi.ArchiTask) {
+tasks.register('archiCatalog', name.flowdigger.gradle.archi.ArchiTask) {
     input file('catalog/catalog.archimate')
     output file('build/catalog.export.xml')
 }
 
-tasks.register('archiLandscape', name.jurgenei.gradle.archi.ArchiTask) {
+tasks.register('archiLandscape', name.flowdigger.gradle.archi.ArchiTask) {
     input file('landscape/landscape.archimate')
     output file('build/landscape.export.xml')
 }
@@ -230,18 +230,18 @@ Run static compile checks:
 
 ## Project Structure (Current)
 
-- `src/main/java/name/jurgenei/gradle/archi/ArchiGradlePlugin.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchiTask.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchiBackend.java`
-- `src/main/java/name/jurgenei/gradle/archi/CliArchiBackend.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchimateRunner.java`
+- `src/main/java/name/flowdigger/gradle/archi/ArchiGradlePlugin.java`
+- `src/main/java/name/flowdigger/gradle/archi/ArchiTask.java`
+- `src/main/java/name/flowdigger/gradle/archi/ArchiBackend.java`
+- `src/main/java/name/flowdigger/gradle/archi/CliArchiBackend.java`
+- `src/main/java/name/flowdigger/gradle/archi/ArchimateRunner.java`
 
 ## Testing
 
 Main test suites:
 
-- `src/test/java/name/jurgenei/gradle/archi/ArchiTaskPluginTest.java`
-- `src/test/java/name/jurgenei/gradle/archi/ArchimateRunnerTest.java`
+- `src/test/java/name/flowdigger/gradle/archi/ArchiTaskPluginTest.java`
+- `src/test/java/name/flowdigger/gradle/archi/ArchimateRunnerTest.java`
 
 Run:
 
@@ -251,7 +251,7 @@ Run:
 
 ## Troubleshooting
 
-- **Task not found (`archi`)**: ensure plugin id `name.jurgenei.gradle.archi` is applied.
+- **Task not found (`archi`)**: ensure plugin id `name.flowdigger.gradle.archi` is applied.
 - **Missing input/output error**: configure both `input` and `output` in task configuration.
 - **Path problems**: prefer `file('relative/path')` over raw strings for portability.
 
@@ -261,4 +261,4 @@ This project is licensed under the **MIT License** – see the [LICENSE](./LICEN
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues and pull requests on [GitHub](https://github.com/jurgenei/gradle-archi-plugin).
+Contributions are welcome! Feel free to open issues and pull requests on [GitHub](https://github.com/flowdigger/gradle-archi-plugin).
