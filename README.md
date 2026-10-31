@@ -7,7 +7,6 @@
 [![Coverage CI](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml/badge.svg)](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml)
 [![Coverage](https://codecov.io/gh/flowdigger/gradle-archi-plugin/branch/main/graph/badge.svg)](https://codecov.io/gh/flowdigger/gradle-archi-plugin)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/name.flowdigger.gradle.archi?label=Plugin%20Portal)](https://plugins.gradle.org/plugin/name.flowdigger.gradle.archi)
 
 Gradle plugin to run Archi export processing as a **regular Gradle task**.
 
