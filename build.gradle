@@ -156,7 +156,6 @@ tasks.matching { it.name == 'sourcesJar' }.configureEach {
     // Runtime binaries are required in plugin JAR, but must not be part of sources artifact.
     exclude('archi/plugins/**/*.archiplugin')
 }
-}
 
 tasks.named('jacocoTestCoverageVerification') {
     dependsOn tasks.named('jacocoTestReport')
