@@ -13,13 +13,13 @@
 [![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot)](https://github.com/jurgenei/gradle-archi-plugin/security/dependabot)
 [![Coverage](https://codecov.io/gh/jurgenei/gradle-archi-plugin/graph/badge.svg?branch=main)](https://codecov.io/gh/jurgenei/gradle-archi-plugin)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/name.jurgenei.gradle.archi?label=Plugin%20Portal)](https://plugins.gradle.org/plugin/name.jurgenei.gradle.archi)
+[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/org.flowdigger.gradle.archi?label=Plugin%20Portal)](https://plugins.gradle.org/plugin/org.flowdigger.gradle.archi)
 [![Java](https://img.shields.io/badge/java-21+-green.svg)](https://www.oracle.com/java/)
 [![Gradle](https://img.shields.io/badge/gradle-9.5+-blue.svg)](https://gradle.org/)
 
 Gradle plugin to run Archi export processing as a **regular Gradle task**.
 
-The plugin contributes one task named `archi` (type `name.jurgenei.gradle.archi.ArchiTask`) and does not use a custom DSL extension model anymore.
+The plugin contributes one task named `archi` (type `org.flowdigger.gradle.archi.ArchiTask`) and does not use a custom DSL extension model anymore.
 
 ## Position in XIR spine
 
@@ -40,9 +40,9 @@ Structured Knowledge -> XIR -> Observation -> Derivation -> Knowledge -> Applica
 
 ## Plugin Coordinates
 
-- Plugin id: `name.jurgenei.gradle.archi`
-- Implementation class: `name.jurgenei.gradle.archi.ArchiGradlePlugin`
-- Main task type: `name.jurgenei.gradle.archi.ArchiTask`
+- Plugin id: `org.flowdigger.gradle.archi`
+- Implementation class: `org.flowdigger.gradle.archi.ArchiGradlePlugin`
+- Main task type: `org.flowdigger.gradle.archi.ArchiTask`
 
 ## Requirements
 
@@ -55,7 +55,7 @@ Add the plugin and configure the `archi` task in `build.gradle`:
 
 ```groovy
 plugins {
-    id 'name.jurgenei.gradle.archi' version '0.1.8'
+    id 'org.flowdigger.gradle.archi' version '0.1.8'
 }
 
 archi {
@@ -86,7 +86,7 @@ Then in consumer `build.gradle`:
 
 ```groovy
 plugins {
-    id 'name.jurgenei.gradle.archi'
+    id 'org.flowdigger.gradle.archi'
 }
 ```
 
@@ -127,12 +127,12 @@ archi {
 ### 2) Register Multiple Archi Tasks
 
 ```groovy
-tasks.register('archiCatalog', name.jurgenei.gradle.archi.ArchiTask) {
+tasks.register('archiCatalog', org.flowdigger.gradle.archi.ArchiTask) {
     input file('catalog/catalog.archimate')
     output file('build/catalog.export.xml')
 }
 
-tasks.register('archiLandscape', name.jurgenei.gradle.archi.ArchiTask) {
+tasks.register('archiLandscape', org.flowdigger.gradle.archi.ArchiTask) {
     input file('landscape/landscape.archimate')
     output file('build/landscape.export.xml')
 }
@@ -248,18 +248,18 @@ Run static compile checks:
 
 ## Project Structure (Current)
 
-- `src/main/java/name/jurgenei/gradle/archi/ArchiGradlePlugin.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchiTask.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchiBackend.java`
-- `src/main/java/name/jurgenei/gradle/archi/CliArchiBackend.java`
-- `src/main/java/name/jurgenei/gradle/archi/ArchimateRunner.java`
+- `src/main/java/org/flowdigger/gradle/archi/ArchiGradlePlugin.java`
+- `src/main/java/org/flowdigger/gradle/archi/ArchiTask.java`
+- `src/main/java/org/flowdigger/gradle/archi/ArchiBackend.java`
+- `src/main/java/org/flowdigger/gradle/archi/CliArchiBackend.java`
+- `src/main/java/org/flowdigger/gradle/archi/ArchimateRunner.java`
 
 ## Testing
 
 Main test suites:
 
-- `src/test/java/name/jurgenei/gradle/archi/ArchiTaskPluginTest.java`
-- `src/test/java/name/jurgenei/gradle/archi/ArchimateRunnerTest.java`
+- `src/test/java/org/flowdigger/gradle/archi/ArchiTaskPluginTest.java`
+- `src/test/java/org/flowdigger/gradle/archi/ArchimateRunnerTest.java`
 
 Run:
 
@@ -269,7 +269,7 @@ Run:
 
 ## Troubleshooting
 
-- **Task not found (`archi`)**: ensure plugin id `name.jurgenei.gradle.archi` is applied.
+- **Task not found (`archi`)**: ensure plugin id `org.flowdigger.gradle.archi` is applied.
 - **Missing input/output error**: configure both `input` and `output` in task configuration.
 - **Path problems**: prefer `file('relative/path')` over raw strings for portability.
 

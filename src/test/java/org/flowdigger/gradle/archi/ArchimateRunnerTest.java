@@ -1,4 +1,4 @@
-package name.jurgenei.gradle.archi;
+package org.flowdigger.gradle.archi;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
