@@ -2,6 +2,9 @@
 
 ![Conformance](https://img.shields.io/badge/Conformance-Check--All%20Passing-brightgreen)
 
+[![Release](https://img.shields.io/github/v/release/flowdigger/gradle-archi-plugin?sort=semver)](https://central.sonatype.com/search?q=g:org.flowdigger.gradle%20AND%20a:gradle-archi-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/org.flowdigger.gradle/gradle-archi-plugin?label=Maven%20Central)](https://central.sonatype.com/search?q=g:org.flowdigger.gradle%20AND%20a:gradle-archi-plugin)
+
 [![Build Status](https://img.shields.io/github/actions/workflow/status/flowdigger/gradle-archi-plugin/ci.yml?branch=main)](https://github.com/flowdigger/gradle-archi-plugin/actions)
 [![Docker Export Test](https://img.shields.io/github/actions/workflow/status/flowdigger/gradle-archi-plugin/docker-test.yml?branch=main&label=Docker%20Export%20Test)](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/docker-test.yml)
 [![Coverage CI](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml/badge.svg)](https://github.com/flowdigger/gradle-archi-plugin/actions/workflows/coverage.yml)
