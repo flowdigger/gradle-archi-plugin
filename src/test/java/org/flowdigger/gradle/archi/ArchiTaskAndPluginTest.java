@@ -1,4 +1,4 @@
-package name.jurgenei.gradle.archi;
+package org.flowdigger.gradle.archi;
 
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
