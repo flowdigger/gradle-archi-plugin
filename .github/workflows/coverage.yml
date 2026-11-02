@@ -61,7 +61,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ env.CODECOV_TOKEN }}
-          slug: jurgenei/gradle-archi-plugin
+          slug: flowdigger/gradle-archi-plugin
 
       - name: Codecov token missing notice
         if: ${{ env.CODECOV_TOKEN == '' }}

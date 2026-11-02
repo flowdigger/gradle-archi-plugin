@@ -55,19 +55,19 @@ node_task -->|"builds Excel option"| node_excel_export
 node_excel_export -->|"passes CLI option"| node_backend
 node_consumer -.->|"may run containerized"| node_container_mode
 
-click node_plugin "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiGradlePlugin.java"
-click node_task "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiTask.java"
-click node_runner "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchimateRunner.java"
-click node_backend "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/CliArchiBackend.java"
-click node_contract "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiBackend.java"
-click node_runtime_extract "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/CliArchiBackend.java"
-click node_launcher "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/resources/archi/scripts/archi-launcher.sh"
-click node_plugin_installer "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/resources/archi/bin/install-archiplugin.sh"
-click node_plugin_bundle "https://github.com/jurgenei/gradle-archi-plugin/tree/main/src/main/resources/archi/plugins"
-click node_provisioning "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/resources/archi/conf/archi-release.env"
-click node_export_script "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/resources/archi/ajs/export-assets.ajs"
-click node_excel_export "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiTask.java"
-click node_container_mode "https://github.com/jurgenei/gradle-archi-plugin/blob/main/src/main/resources/archi/scripts/archi-launcher.sh"
+click node_plugin "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiGradlePlugin.java"
+click node_task "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiTask.java"
+click node_runner "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchimateRunner.java"
+click node_backend "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/CliArchiBackend.java"
+click node_contract "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiBackend.java"
+click node_runtime_extract "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/CliArchiBackend.java"
+click node_launcher "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/resources/archi/scripts/archi-launcher.sh"
+click node_plugin_installer "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/resources/archi/bin/install-archiplugin.sh"
+click node_plugin_bundle "https://github.com/flowdigger/gradle-archi-plugin/tree/main/src/main/resources/archi/plugins"
+click node_provisioning "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/resources/archi/conf/archi-release.env"
+click node_export_script "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/resources/archi/ajs/export-assets.ajs"
+click node_excel_export "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/java/org/flowdigger/gradle/archi/ArchiTask.java"
+click node_container_mode "https://github.com/flowdigger/gradle-archi-plugin/blob/main/src/main/resources/archi/scripts/archi-launcher.sh"
 
 classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
 classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
