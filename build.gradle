@@ -1,6 +1,7 @@
+import java.security.MessageDigest
+
 plugins {
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '2.2.1'
     id 'jacoco'
     id 'maven-publish'
     id 'signing'
@@ -9,8 +10,8 @@ plugins {
     id 'org.sonarqube' version '6.0.1.5171'
 }
 
-group = 'name.jurgenei.gradle'
-version = '0.1.10'
+group = 'org.flowdigger.gradle'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
@@ -26,13 +27,13 @@ dependencies {
 }
 
 gradlePlugin {
-    website = 'https://github.com/jurgenei/gradle-archi-plugin'
-    vcsUrl = 'https://github.com/jurgenei/gradle-archi-plugin.git'
+    website = 'https://github.com/flowdigger/gradle-archi-plugin'
+    vcsUrl = 'https://github.com/flowdigger/gradle-archi-plugin.git'
 
     plugins {
         archiPlugin {
-            id = 'name.jurgenei.gradle.archi'
-            implementationClass = 'name.jurgenei.gradle.archi.ArchiGradlePlugin'
+            id = 'org.flowdigger.gradle.archi'
+            implementationClass = 'org.flowdigger.gradle.archi.ArchiGradlePlugin'
             displayName = 'Archi Plugin'
             description = 'Gradle plugin for Archi architecture description tasks.'
             tags = ['archi', 'architecture', 'modeling']
@@ -45,7 +46,7 @@ publishing {
         pom {
             name = 'Archi Plugin'
             description = 'Gradle plugin for Archi architecture description'
-            url = 'https://github.com/jurgenei/gradle-archi-plugin'
+            url = 'https://github.com/flowdigger/gradle-archi-plugin'
 
             licenses {
                 license {
@@ -56,32 +57,48 @@ publishing {
 
             developers {
                 developer {
-                    id = 'jurgenei'
-                    name = 'Jurgen Hildebrand'
+                    id = 'flowdigger'
+                    name = 'Flowdigger'
                 }
             }
 
             scm {
-                connection = 'scm:git:https://github.com/jurgenei/gradle-archi-plugin.git'
-                developerConnection = 'scm:git:ssh://git@github.com/jurgenei/gradle-archi-plugin.git'
-                url = 'https://github.com/jurgenei/gradle-archi-plugin'
+                connection = 'scm:git:https://github.com/flowdigger/gradle-archi-plugin.git'
+                developerConnection = 'scm:git:ssh://git@github.com/flowdigger/gradle-archi-plugin.git'
+                url = 'https://github.com/flowdigger/gradle-archi-plugin'
             }
         }
     }
 
     repositories {
         mavenLocal()
+        maven {
+            name = 'sonatype'
+            def releasesRepoUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url = uri(version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
+            credentials {
+                username = providers.gradleProperty('mavenCentralUsername').orNull
+                password = providers.gradleProperty('mavenCentralPassword').orNull
+            }
+        }
     }
 }
 
 signing {
-    required = { gradle.taskGraph.hasTask("publish") }
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
+    def signingKey = providers.gradleProperty("signingKey").orNull
+    def signingPassword = providers.gradleProperty("signingPassword").orNull
+    def signingKeyId = providers.gradleProperty("signingKeyId").orNull
     if (signingKey && signingPassword) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications.mavenJava
+        if (signingKeyId) {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        } else {
+            useInMemoryPgpKeys(signingKey, signingPassword)
+        }
+    } else {
+        useGpgCmd()
     }
+    sign publishing.publications
 }
 
 // OWASP Dependency-Check configuration
@@ -140,11 +157,6 @@ tasks.withType(Test).configureEach {
 tasks.matching { it.name == 'sourcesJar' }.configureEach {
     // Runtime binaries are required in plugin JAR, but must not be part of sources artifact.
     exclude('archi/plugins/**/*.archiplugin')
-}
-
-tasks.named('publishPlugins') {
-    // Publish task talks to Plugin Portal; disable CC to avoid stale validate-only results.
-    notCompatibleWithConfigurationCache('Network publication and remote version checks must execute every run.')
 }
 
 jacoco {
@@ -215,4 +227,56 @@ tasks.register('verifyBundledArchiPlugins') {
 tasks.named('check') {
     dependsOn tasks.named('jacocoTestCoverageVerification')
     dependsOn tasks.named('verifyBundledArchiPlugins')
+}
+
+def centralArtifactId = (project.findProperty('mavenArtifactId') ?: project.name).toString()
+def centralGroupPath = project.group.toString().replace('.', '/')
+
+def stageCentralBundleRepo = tasks.register('stageCentralBundleRepo', Sync) {
+    dependsOn tasks.named('publishToMavenLocal')
+    def artifactVersionDir = file("${System.getProperty('user.home')}/.m2/repository/${centralGroupPath}/${centralArtifactId}/${project.version}")
+    from(artifactVersionDir)
+    into(layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}"))
+    doFirst {
+        if (!artifactVersionDir.exists()) {
+            throw new GradleException("Expected local Maven artifact version directory not found: ${artifactVersionDir}")
+        }
+    }
+}
+
+def generateCentralBundleChecksums = tasks.register('generateCentralBundleChecksums') {
+    dependsOn stageCentralBundleRepo
+    notCompatibleWithConfigurationCache('Generates checksum files by scanning staged output directory at execution time.')
+    doLast {
+        def stagedVersionDir = layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}").get().asFile
+        if (!stagedVersionDir.exists()) {
+            throw new GradleException("Expected staged version directory not found: ${stagedVersionDir}")
+        }
+        def checksum = { File input, String algorithm ->
+            MessageDigest digest = MessageDigest.getInstance(algorithm)
+            input.withInputStream { stream ->
+                byte[] buffer = new byte[8192]
+                int read
+                while ((read = stream.read(buffer)) >= 0) {
+                    digest.update(buffer, 0, read)
+                }
+            }
+            digest.digest().collect { String.format('%02x', it & 0xff) }.join('')
+        }
+        stagedVersionDir.eachFileRecurse { file ->
+            if (file.isFile() && !file.name.endsWith('.md5') && !file.name.endsWith('.sha1')) {
+                file.parentFile.toPath().resolve(file.name + '.md5').toFile().text = checksum(file, 'MD5') + System.lineSeparator()
+                file.parentFile.toPath().resolve(file.name + '.sha1').toFile().text = checksum(file, 'SHA-1') + System.lineSeparator()
+            }
+        }
+    }
+}
+
+tasks.register('packageCentralBundle', Zip) {
+    dependsOn generateCentralBundleChecksums
+    archiveBaseName = project.name
+    archiveVersion = project.version.toString()
+    archiveClassifier = 'central-bundle'
+    destinationDirectory = layout.buildDirectory.dir('central-bundle').get().asFile
+    from layout.buildDirectory.dir('central-staging-repo')
 }
