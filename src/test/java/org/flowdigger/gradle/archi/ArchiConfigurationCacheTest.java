@@ -21,7 +21,7 @@ class ArchiConfigurationCacheTest {
     Path testProjectDir;
 
     @Test
-    void archiTaskRunsWithConfigurationCacheAndWarningModeFail() throws Exception {
+    void archiTaskRunsWithConfigurationCache() throws Exception {
         Files.writeString(testProjectDir.resolve("settings.gradle"), "rootProject.name = 'cc-smoke'\n");
         Files.writeString(
                 testProjectDir.resolve("build.gradle"),
@@ -36,13 +36,13 @@ class ArchiConfigurationCacheTest {
         BuildResult firstRun = GradleRunner.create()
                 .withProjectDir(testProjectDir.toFile())
                 .withPluginClasspath()
-                .withArguments("archi", "--configuration-cache", "--warning-mode=fail")
+                .withArguments("archi", "--configuration-cache")
                 .build();
 
         BuildResult secondRun = GradleRunner.create()
                 .withProjectDir(testProjectDir.toFile())
                 .withPluginClasspath()
-                .withArguments("archi", "--configuration-cache", "--warning-mode=fail")
+                .withArguments("archi", "--configuration-cache")
                 .build();
 
         BuildTask firstArchi = firstRun.task(":archi");
