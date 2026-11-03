@@ -28,7 +28,8 @@ class ArchiConfigurationCacheTest {
                 "plugins { id 'org.flowdigger.gradle.archi' }\n" +
                         "tasks.named('archi') {\n" +
                         "  input file('in.xml')\n" +
-                                        "  output \"$buildDir/out.xml\"\n" +
+                        "  output \"$buildDir/out.xml\"\n" +
+                        "  env 'ARCHI_USE_MOCK', 'true'\n" +
                         "}\n"
         );
         Files.writeString(testProjectDir.resolve("in.xml"), "<archimate></archimate>\n");
