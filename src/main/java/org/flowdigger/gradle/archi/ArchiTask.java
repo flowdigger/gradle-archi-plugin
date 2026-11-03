@@ -1,4 +1,4 @@
-package name.jurgenei.gradle.archi;
+package org.flowdigger.gradle.archi;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;

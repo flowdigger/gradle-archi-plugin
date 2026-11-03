@@ -2,7 +2,7 @@
 
 ![Conformance](https://img.shields.io/badge/Conformance-Check--All%20Passing-brightgreen)
 
-This directory contains small consumer projects showing how to use the `name.jurgenei.gradle.archi` plugin from this repository via composite build.
+This directory contains small consumer projects showing how to use the `org.flowdigger.gradle.archi` plugin from this repository via composite build.
 
 ## Prerequisites
 

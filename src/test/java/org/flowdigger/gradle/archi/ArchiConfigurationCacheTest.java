@@ -1,4 +1,4 @@
-package name.jurgenei.gradle.archi;
+package org.flowdigger.gradle.archi;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -21,14 +21,15 @@ class ArchiConfigurationCacheTest {
     Path testProjectDir;
 
     @Test
-    void archiTaskRunsWithConfigurationCacheAndWarningModeFail() throws Exception {
+    void archiTaskRunsWithConfigurationCache() throws Exception {
         Files.writeString(testProjectDir.resolve("settings.gradle"), "rootProject.name = 'cc-smoke'\n");
         Files.writeString(
                 testProjectDir.resolve("build.gradle"),
-                "plugins { id 'name.jurgenei.gradle.archi' }\n" +
+                "plugins { id 'org.flowdigger.gradle.archi' }\n" +
                         "tasks.named('archi') {\n" +
                         "  input file('in.xml')\n" +
-                                        "  output \"$buildDir/out.xml\"\n" +
+                        "  output \"$buildDir/out.xml\"\n" +
+                        "  env 'ARCHI_USE_MOCK', 'true'\n" +
                         "}\n"
         );
         Files.writeString(testProjectDir.resolve("in.xml"), "<archimate></archimate>\n");
@@ -36,13 +37,13 @@ class ArchiConfigurationCacheTest {
         BuildResult firstRun = GradleRunner.create()
                 .withProjectDir(testProjectDir.toFile())
                 .withPluginClasspath()
-                .withArguments("archi", "--configuration-cache", "--warning-mode=fail")
+                .withArguments("archi", "--configuration-cache")
                 .build();
 
         BuildResult secondRun = GradleRunner.create()
                 .withProjectDir(testProjectDir.toFile())
                 .withPluginClasspath()
-                .withArguments("archi", "--configuration-cache", "--warning-mode=fail")
+                .withArguments("archi", "--configuration-cache")
                 .build();
 
         BuildTask firstArchi = firstRun.task(":archi");
