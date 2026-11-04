@@ -110,7 +110,7 @@ signing {
 
 // OWASP Dependency-Check configuration
 dependencyCheck {
-    format = 'HTML,JSON,XML'
+    formats = ['HTML', 'JSON', 'XML']
     failBuildOnCVSS = 7.0
     suppressionFile = 'dependency-check-suppressions.xml'
 //    enableExperimental = false
