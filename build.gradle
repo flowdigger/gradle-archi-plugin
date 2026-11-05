@@ -19,6 +19,11 @@ checkstyle {
     configFile = file('checkstyle.xml')
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 repositories {
     mavenCentral()
 }
