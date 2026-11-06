@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'org.flowdigger.gradle'
-version = '1.0.0'
+version = '1.0.1'
 
 checkstyle {
     toolVersion = '10.26.1'
@@ -258,17 +258,26 @@ tasks.named('check') {
     dependsOn tasks.named('verifyBundledArchiPlugins')
 }
 
-def centralArtifactId = (project.findProperty('mavenArtifactId') ?: project.name).toString()
-def centralGroupPath = project.group.toString().replace('.', '/')
+def centralStagingRoot = layout.buildDirectory.dir('central-staging-repo')
 
 def stageCentralBundleRepo = tasks.register('stageCentralBundleRepo', Sync) {
     dependsOn tasks.named('publishToMavenLocal')
-    def artifactVersionDir = file("${System.getProperty('user.home')}/.m2/repository/${centralGroupPath}/${centralArtifactId}/${project.version}")
-    from(artifactVersionDir)
-    into(layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}"))
+    into(centralStagingRoot)
+
+    publishing.publications.withType(MavenPublication).all { publication ->
+        def publicationPath = "${publication.groupId.replace('.', '/')}/${publication.artifactId}/${publication.version}"
+        from(file("${System.getProperty('user.home')}/.m2/repository/${publicationPath}")) {
+            into(publicationPath)
+        }
+    }
+
     doFirst {
-        if (!artifactVersionDir.exists()) {
-            throw new GradleException("Expected local Maven artifact version directory not found: ${artifactVersionDir}")
+        publishing.publications.withType(MavenPublication).each { publication ->
+            def publicationPath = "${publication.groupId.replace('.', '/')}/${publication.artifactId}/${publication.version}"
+            def localPublicationDir = file("${System.getProperty('user.home')}/.m2/repository/${publicationPath}")
+            if (!localPublicationDir.exists()) {
+                throw new GradleException("Expected local Maven publication directory not found: ${localPublicationDir}")
+            }
         }
     }
 }
@@ -277,9 +286,9 @@ def generateCentralBundleChecksums = tasks.register('generateCentralBundleChecks
     dependsOn stageCentralBundleRepo
     notCompatibleWithConfigurationCache('Generates checksum files by scanning staged output directory at execution time.')
     doLast {
-        def stagedVersionDir = layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}").get().asFile
-        if (!stagedVersionDir.exists()) {
-            throw new GradleException("Expected staged version directory not found: ${stagedVersionDir}")
+        def stagedRepoDir = centralStagingRoot.get().asFile
+        if (!stagedRepoDir.exists()) {
+            throw new GradleException("Expected staged repository directory not found: ${stagedRepoDir}")
         }
         def checksum = { File input, String algorithm ->
             MessageDigest digest = MessageDigest.getInstance(algorithm)
@@ -292,7 +301,7 @@ def generateCentralBundleChecksums = tasks.register('generateCentralBundleChecks
             }
             digest.digest().collect { String.format('%02x', it & 0xff) }.join('')
         }
-        stagedVersionDir.eachFileRecurse { file ->
+        stagedRepoDir.eachFileRecurse { file ->
             if (file.isFile() && !file.name.endsWith('.md5') && !file.name.endsWith('.sha1')) {
                 file.parentFile.toPath().resolve(file.name + '.md5').toFile().text = checksum(file, 'MD5') + System.lineSeparator()
                 file.parentFile.toPath().resolve(file.name + '.sha1').toFile().text = checksum(file, 'SHA-1') + System.lineSeparator()
