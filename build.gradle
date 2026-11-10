@@ -88,6 +88,8 @@ dependencyCheck {
     // Do not scan Gradle build environment/tooling classpath dependencies.
     // Security gate should evaluate project artifacts and their dependency graph.
     scanBuildEnv = false
+    // Tooling-only configurations (not shipped in plugin artifact).
+    skipConfigurations = ['checkstyle', 'spotbugs', 'spotbugsPlugins', 'spotbugsSlf4j']
     if (dependencyCheckSuppression.exists()) {
         suppressionFile = dependencyCheckSuppression.absolutePath
     }
