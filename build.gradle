@@ -1,10 +1,8 @@
-import java.security.MessageDigest
-
 plugins {
     id 'java-gradle-plugin'
     id 'jacoco'
     id 'maven-publish'
-    id 'signing'
+    id 'org.flowdigger.maven-publish'
     id 'checkstyle'
     id 'org.owasp.dependencycheck' version '13.0.0'
     id 'com.github.spotbugs' version '6.1.0'
@@ -80,43 +78,6 @@ publishing {
             }
         }
     }
-
-    repositories {
-        mavenLocal()
-        maven {
-            name = 'sonatype'
-            def releasesRepoUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-            url = uri(version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
-            credentials {
-                username = providers.gradleProperty('mavenCentralUsername').orNull
-                password = providers.gradleProperty('mavenCentralPassword').orNull
-            }
-        }
-    }
-}
-
-signing {
-    def signingKey = providers.gradleProperty("signingKey").orNull
-    def signingPassword = providers.gradleProperty("signingPassword").orNull
-    def signingKeyId = providers.gradleProperty("signingKeyId").orNull
-    def validKeyIdPattern = ~/(?i)^[0-9a-f]{8}([0-9a-f]{8})?$/
-    def normalizedSigningKeyId = signingKeyId
-            ?.trim()
-            ?.replaceFirst(/^(?i)0x/, '')
-    if (!(normalizedSigningKeyId ==~ validKeyIdPattern)) {
-        normalizedSigningKeyId = null
-    }
-    if (signingKey && signingPassword) {
-        if (normalizedSigningKeyId) {
-            useInMemoryPgpKeys(normalizedSigningKeyId, signingKey, signingPassword)
-        } else {
-            useInMemoryPgpKeys(signingKey, signingPassword)
-        }
-    } else {
-        useGpgCmd()
-    }
-    sign publishing.publications
 }
 
 // OWASP Dependency-Check configuration
@@ -256,56 +217,4 @@ tasks.register('verifyBundledArchiPlugins') {
 tasks.named('check') {
     dependsOn tasks.named('jacocoTestCoverageVerification')
     dependsOn tasks.named('verifyBundledArchiPlugins')
-}
-
-def centralArtifactId = (project.findProperty('mavenArtifactId') ?: project.name).toString()
-def centralGroupPath = project.group.toString().replace('.', '/')
-
-def stageCentralBundleRepo = tasks.register('stageCentralBundleRepo', Sync) {
-    dependsOn tasks.named('publishToMavenLocal')
-    def artifactVersionDir = file("${System.getProperty('user.home')}/.m2/repository/${centralGroupPath}/${centralArtifactId}/${project.version}")
-    from(artifactVersionDir)
-    into(layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}"))
-    doFirst {
-        if (!artifactVersionDir.exists()) {
-            throw new GradleException("Expected local Maven artifact version directory not found: ${artifactVersionDir}")
-        }
-    }
-}
-
-def generateCentralBundleChecksums = tasks.register('generateCentralBundleChecksums') {
-    dependsOn stageCentralBundleRepo
-    notCompatibleWithConfigurationCache('Generates checksum files by scanning staged output directory at execution time.')
-    doLast {
-        def stagedVersionDir = layout.buildDirectory.dir("central-staging-repo/${centralGroupPath}/${centralArtifactId}/${project.version}").get().asFile
-        if (!stagedVersionDir.exists()) {
-            throw new GradleException("Expected staged version directory not found: ${stagedVersionDir}")
-        }
-        def checksum = { File input, String algorithm ->
-            MessageDigest digest = MessageDigest.getInstance(algorithm)
-            input.withInputStream { stream ->
-                byte[] buffer = new byte[8192]
-                int read
-                while ((read = stream.read(buffer)) >= 0) {
-                    digest.update(buffer, 0, read)
-                }
-            }
-            digest.digest().collect { String.format('%02x', it & 0xff) }.join('')
-        }
-        stagedVersionDir.eachFileRecurse { file ->
-            if (file.isFile() && !file.name.endsWith('.md5') && !file.name.endsWith('.sha1')) {
-                file.parentFile.toPath().resolve(file.name + '.md5').toFile().text = checksum(file, 'MD5') + System.lineSeparator()
-                file.parentFile.toPath().resolve(file.name + '.sha1').toFile().text = checksum(file, 'SHA-1') + System.lineSeparator()
-            }
-        }
-    }
-}
-
-tasks.register('packageCentralBundle', Zip) {
-    dependsOn generateCentralBundleChecksums
-    archiveBaseName = project.name
-    archiveVersion = project.version.toString()
-    archiveClassifier = 'central-bundle'
-    destinationDirectory = layout.buildDirectory.dir('central-bundle').get().asFile
-    from layout.buildDirectory.dir('central-staging-repo')
 }
