@@ -28,7 +28,7 @@ The plugin contributes one task named `archi` (type `org.flowdigger.gradle.archi
 
 ## Plugin Coordinates
 
-- Plugin id: `org.flowdigger.gradle.archi`
+- Plugin id: `org.flowdigger.archi`
 - Implementation class: `org.flowdigger.gradle.archi.ArchiGradlePlugin`
 - Main task type: `org.flowdigger.gradle.archi.ArchiTask`
 
@@ -43,7 +43,7 @@ Add the plugin and configure the `archi` task in `build.gradle`:
 
 ```groovy
 plugins {
-    id 'org.flowdigger.gradle.archi' version '1.0.0'
+    id 'org.flowdigger.archi' version '1.0.0'
 }
 
 archi {
@@ -74,7 +74,7 @@ Then in consumer `build.gradle`:
 
 ```groovy
 plugins {
-    id 'org.flowdigger.gradle.archi'
+    id 'org.flowdigger.archi'
 }
 ```
 
@@ -257,7 +257,7 @@ Run:
 
 ## Troubleshooting
 
-- **Task not found (`archi`)**: ensure plugin id `org.flowdigger.gradle.archi` is applied.
+- **Task not found (`archi`)**: ensure plugin id `org.flowdigger.archi` is applied.
 - **Missing input/output error**: configure both `input` and `output` in task configuration.
 - **Path problems**: prefer `file('relative/path')` over raw strings for portability.
 
@@ -274,18 +274,22 @@ Contributions are welcome! Feel free to open issues and pull requests on [GitHub
 Set credentials and signing material:
 
 ```bash
-export ORG_GRADLE_PROJECT_mavenCentralUsername=...
-export ORG_GRADLE_PROJECT_mavenCentralPassword=...
-export ORG_GRADLE_PROJECT_signingKey=...
-export ORG_GRADLE_PROJECT_signingPassword=...
-export ORG_GRADLE_PROJECT_signingKeyId=...
+export MAVEN_CENTRAL_USERNAME=...
+export MAVEN_CENTRAL_PASSWORD=...
+export SIGNING_KEY=...
+export SIGNING_PASSWORD=...
 ```
 
-Build signed Central bundle:
+Run local target (default):
 
 ```bash
-./gradlew clean packageCentralBundle
+./gradlew publish
 ```
 
-Release workflow (`.github/workflows/release.yml`) uploads bundle to Sonatype Central Publisher API on `v*` tags (or manual dispatch).
-Configure repository secrets: `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_PASSWORD`, `SIGNING_KEY_ID`.
+Run Central target:
+
+```bash
+./gradlew publish -Pflowdigger.publish.target=central
+```
+
+Release workflow (`.github/workflows/release.yml`) calls shared reusable workflow and triggers on `v*` tags or manual dispatch.

@@ -25,7 +25,7 @@ class ArchiConfigurationCacheTest {
         Files.writeString(testProjectDir.resolve("settings.gradle"), "rootProject.name = 'cc-smoke'\n");
         Files.writeString(
                 testProjectDir.resolve("build.gradle"),
-                "plugins { id 'org.flowdigger.gradle.archi' }\n" +
+                "plugins { id 'org.flowdigger.archi' }\n" +
                         "tasks.named('archi') {\n" +
                         "  input file('in.xml')\n" +
                         "  output \"$buildDir/out.xml\"\n" +
