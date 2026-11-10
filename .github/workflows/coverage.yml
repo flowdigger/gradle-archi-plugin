@@ -52,6 +52,7 @@ jobs:
 
           clone_if_referenced 'includeBuild("../gradle-antlr-plugin")\|includeBuild('\''../gradle-antlr-plugin'\'')' gradle-antlr-plugin
           clone_if_referenced 'includeBuild("../gradle-antlr-parse-plugin")\|includeBuild('\''../gradle-antlr-parse-plugin'\'')' gradle-antlr-parse-plugin
+          clone_if_referenced 'includeBuild("../flowdigger-gradle")\|includeBuild('\''../flowdigger-gradle'\'')' flowdigger-gradle
 
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x ./gradlew
